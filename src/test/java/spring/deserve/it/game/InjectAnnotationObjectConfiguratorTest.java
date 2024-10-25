@@ -20,17 +20,31 @@ class InjectAnnotationObjectConfiguratorTest {
 
     @Test
     void injectForFieldsIsWorking() {
+        //given
+        ApplicationContext applicationContext = new ApplicationContext("spring.deserve.it");
         InjectAnnotationObjectConfigurator configurator = new InjectAnnotationObjectConfigurator();
+        //Should set app context because split responsibility between application context and configurators
+        configurator.setApplicationContext(applicationContext);
+
+        //when
         configurator.configure(this);
 
+        //then
         assertNotNull(spider);
-
     }
 
     @Test
     void testInjectIsWorkingForMethods() {
+        //given
+        ApplicationContext applicationContext = new ApplicationContext("spring.deserve.it");
         InjectAnnotationObjectConfigurator configurator = new InjectAnnotationObjectConfigurator();
+        //Should set app context because split responsibility between application context and configurators
+        configurator.setApplicationContext(applicationContext);
+
+        //when
         configurator.configure(this);
+
+        //then
         assertNotNull(paperSpider);
     }
 }
