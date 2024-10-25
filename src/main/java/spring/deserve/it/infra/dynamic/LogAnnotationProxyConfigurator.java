@@ -1,7 +1,8 @@
-package spring.deserve.it.infra;
+package spring.deserve.it.infra.dynamic;
 
 import lombok.SneakyThrows;
 import spring.deserve.it.game.Log;
+import spring.deserve.it.infra.ProxyConfigurator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
