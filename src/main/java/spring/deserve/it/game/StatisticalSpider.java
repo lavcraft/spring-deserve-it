@@ -8,7 +8,7 @@ import spring.deserve.it.api.Spider;
 public class StatisticalSpider extends AbstractSpider {
 
     @Inject
-    private HistoricalService historicalServiceInterface;
+    private HistoricalService historicalServiceInterface = new HistoricalService();
 
     @Override
     public RPSEnum fight(Spider opponent, int battleId) {

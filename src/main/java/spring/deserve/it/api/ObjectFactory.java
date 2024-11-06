@@ -1,48 +1,74 @@
 package spring.deserve.it.api;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
+import spring.deserve.it.game.ApplicationContext;
 import spring.deserve.it.game.PaperSpider;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class ObjectFactory {
+    private final ApplicationContext context;
+    private final List<ObjectConfigurator> configurators;
 
-    // Единственный экземпляр класса
-    private static final ObjectFactory INSTANCE = new ObjectFactory();
+    public ObjectFactory(ApplicationContext context) {
+        this.context = context;
 
-    private final List<ObjectConfigurator> configurators = new ArrayList<>();
+        // Используем Reflections для сканирования пакетов
+        Reflections scanner = context.getScanner();
+        // Инициализация ObjectConfigurators
+        Set<Class<? extends ObjectConfigurator>> configuratorClasses = scanner.getSubTypesOf(ObjectConfigurator.class);
+        configurators = configuratorClasses.stream()
+                                           .map(this::createConfigurator)
+                                           .peek(this::injectContextIfNeeded)
+                                           .collect(Collectors.toList());
 
-    // Приватный конструктор, чтобы предотвратить создание экземпляров извне
-    private ObjectFactory() {
-        // Используем Reflections для поиска всех классов, реализующих ObjectConfigurator
-        Reflections reflections = new Reflections("spring.deserve.it"); // Укажите свой пакет здесь
-        Set<Class<? extends ObjectConfigurator>> configuratorClasses = reflections.getSubTypesOf(ObjectConfigurator.class);
+    }
 
-        // Создаем экземпляры конфигураторов и добавляем их в список
-        for (Class<? extends ObjectConfigurator> configuratorClass : configuratorClasses) {
-            try {
-                configurators.add(configuratorClass.getDeclaredConstructor().newInstance());
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to create configurator instance: " + configuratorClass, e);
+    private ObjectConfigurator createConfigurator(Class<? extends ObjectConfigurator> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Не удалось создать конфигуратор: " + clazz.getName(), e);
+        }
+    }
+
+    private void injectContextIfNeeded(Object configurator) {
+        for (Field field : configurator.getClass().getDeclaredFields()) {
+            if (field.getType().equals(ApplicationContext.class)) {
+                field.setAccessible(true);
+                try {
+                    field.set(configurator, context);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Не удалось инжектировать контекст в конфигуратор: " + configurator.getClass().getName(), e);
+                }
             }
         }
     }
 
-    // Публичный метод для получения экземпляра
-    public static ObjectFactory getInstance() {
-        return INSTANCE;
+    public <T> T createObject(Class<T> clazz) {
+        try {
+            // 1. Создаем объект через Reflection
+            T object = clazz.getDeclaredConstructor().newInstance();
+
+            // 2. Настраиваем объект через ObjectConfigurators
+            for (ObjectConfigurator configurator : configurators) {
+                configurator.configure(object);
+            }
+
+            return object;
+        } catch (Exception e) {
+            throw new RuntimeException("Не удалось создать объект класса " + clazz.getName(), e);
+        }
     }
 
-    @SneakyThrows
-    public <T> T createObject(Class<T> type) {
-        T t = type.getDeclaredConstructor().newInstance();
 
 
-        configurators.forEach(configurator -> configurator.configure(t));
-
-        return t;
-    }
 }
