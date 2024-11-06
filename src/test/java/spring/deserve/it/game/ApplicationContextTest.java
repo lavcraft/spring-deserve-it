@@ -1,6 +1,5 @@
 package spring.deserve.it.game;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 class ApplicationContextTest {
     @InjectMocks ApplicationContext applicationContext;
     @Mock        ObjectFactory      objectFactory;

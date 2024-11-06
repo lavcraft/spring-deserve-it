@@ -1,18 +1,20 @@
 package spring.deserve.it.api;
 
+import lombok.RequiredArgsConstructor;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class ApplicationContext {
     private final Map<Class<?>, Object> singletonBeans = new HashMap<>();
     private final Reflections reflections;
     private final ObjectFactory objectFactory;
 
-    public ApplicationContext(String... packagesToScan) {
+    public ApplicationContext(String packagesToScan) {
         // Инициализация Reflection API для указанных пакетов
-        this.reflections = new Reflections((Object[]) packagesToScan);
+        this.reflections = new Reflections(packagesToScan);
 
         // Создание ObjectFactory и передача контекста
         this.objectFactory = new ObjectFactory(this);
