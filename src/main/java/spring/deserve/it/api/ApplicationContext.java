@@ -1,10 +1,14 @@
 package spring.deserve.it.api;
 
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+@RequiredArgsConstructor
 public class ApplicationContext {
     private final Map<Class<?>, Object> singletonBeans = new HashMap<>();
     private final Reflections reflections;
@@ -18,16 +22,32 @@ public class ApplicationContext {
         this.objectFactory = new ObjectFactory(this);
     }
 
+    @SneakyThrows
     public <T> T getBean(Class<T> type) {
-        // Проверяем, есть ли бин в синглтонах
+        // Если объект уже кеширован, возвращаем его
         if (singletonBeans.containsKey(type)) {
             return type.cast(singletonBeans.get(type));
         }
 
-        // Если бин отмечен как синглтон, создаем его и сохраняем
+        // Если тип является интерфейсом, ищем реализацию
+        if (type.isInterface()) {
+            // Находим все реализации интерфейса с помощью Reflections
+            Set<Class<? extends T>> implementations = reflections.getSubTypesOf(type);
+            if (implementations.size() != 1) {
+                throw new IllegalStateException("Ожидалась одна реализация для интерфейса " + type + ", но найдено: " + implementations.size());
+            }
+            // Берем единственную реализацию
+            Class<? extends T> implementationClass = implementations.iterator().next();
+            type = (Class<T>) implementationClass;  // Подменяем `type` на реализацию
+        }
+
+        // Создаем объект через ObjectFactory
         T bean = objectFactory.createObject(type);
+
+        // Если у класса есть аннотация @Singleton, кешируем его по интерфейсу или классу
         if (type.isAnnotationPresent(Singleton.class)) {
-            singletonBeans.put(type, bean);
+            Class<?> key = type.isInterface() ? type.getInterfaces()[0] : type; // кешируем по интерфейсу, если он есть
+            singletonBeans.put(key, bean);
         }
         return bean;
     }

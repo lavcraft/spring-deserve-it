@@ -8,17 +8,17 @@ import spring.deserve.it.api.Spider;
 public class StatisticalSpider extends AbstractSpider {
 
     @Inject
-    private HistoricalService historicalServiceInterface = new HistoricalService();
+    private HistoricalService historicalServiceInterface = new HistoricalServiceImpl();
 
     @Override
     public RPSEnum fight(Spider opponent, int battleId) {
         // Получаем общую статистику оппонента по всем боям
-        HistoricalService.SpiderStatistics opponentStats = historicalServiceInterface.getSpiderStatistics(opponent.hashCode());
+        HistoricalServiceImpl.SpiderStatistics opponentStats = historicalServiceInterface.getSpiderStatistics(opponent.hashCode());
 
         // Если статистика пуста, создаём объект статистики с нулями, избегая null
         opponentStats = opponentStats != null
                         ? opponentStats
-                        : new HistoricalService.SpiderStatistics();
+                        : new HistoricalServiceImpl.SpiderStatistics();
 
         // Определяем на основе общей статистики, какой ход оппонент, вероятно, сделает
         int rockCount     = opponentStats.getRockCount();

@@ -13,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 class ApplicationContextTest {
     @InjectMocks ApplicationContext applicationContext;
     @Mock        ObjectFactory      objectFactory;

@@ -22,7 +22,7 @@ public class GameMaster {
 
             // Сохраняем историю хода для каждого паука
             historicalService.saveHistory(
-                    battleId, HistoricalService.Move.builder()
+                    battleId, HistoricalServiceImpl.Move.builder()
                                                     .player1Id(spider1.hashCode())
                                                     .player1Move(move1)
                                                     .player2Id(spider2.hashCode())

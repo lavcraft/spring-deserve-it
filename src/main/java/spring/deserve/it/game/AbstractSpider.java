@@ -9,8 +9,12 @@ import spring.deserve.it.api.Spider;
 @Setter
 public abstract class AbstractSpider implements Spider {
 
+
+
     @InjectProperty("spider.default.lives")
     private int lives = 5;
+
+
 
     public boolean isAlive() {
         return lives > 0;
