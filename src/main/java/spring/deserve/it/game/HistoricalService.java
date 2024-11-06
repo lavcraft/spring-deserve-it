@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import spring.deserve.it.api.RPSEnum;
+import spring.deserve.it.api.Singleton;
 
 import java.util.ArrayList;
 import java.util.HashMap;

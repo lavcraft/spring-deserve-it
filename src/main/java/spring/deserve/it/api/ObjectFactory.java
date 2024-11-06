@@ -1,14 +1,9 @@
 package spring.deserve.it.api;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.reflections.Reflections;
-import spring.deserve.it.game.ApplicationContext;
-import spring.deserve.it.game.PaperSpider;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +17,7 @@ public class ObjectFactory {
         this.context = context;
 
         // Используем Reflections для сканирования пакетов
-        Reflections scanner = context.getScanner();
+        Reflections scanner = context.getReflections();
         // Инициализация ObjectConfigurators
         Set<Class<? extends ObjectConfigurator>> configuratorClasses = scanner.getSubTypesOf(ObjectConfigurator.class);
         configurators = configuratorClasses.stream()

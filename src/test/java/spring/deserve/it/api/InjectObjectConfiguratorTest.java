@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import spring.deserve.it.game.ApplicationContext;
 
 import static org.mockito.Mockito.*;
 
@@ -39,7 +38,7 @@ class InjectObjectConfiguratorTest {
 
     @BeforeEach
     void setUp() {
-        when(applicationContext.getObject(InjectedTestClass.class)).thenReturn(new InjectedTestClass());
+        when(applicationContext.getBean(InjectedTestClass.class)).thenReturn(new InjectedTestClass());
     }
 
     @Test
@@ -51,7 +50,7 @@ class InjectObjectConfiguratorTest {
         injectObjectConfigurator.configure(injectTestClass);
 
         //then
-        verify(applicationContext, times(1)).getObject(InjectedTestClass.class);
+        verify(applicationContext, times(1)).getBean(InjectedTestClass.class);
         Assertions.assertThat(injectTestClass.injectedTestClass).isNotNull();
     }
 
@@ -66,7 +65,7 @@ class InjectObjectConfiguratorTest {
         injectObjectConfigurator.configure(injectTestClass);
 
         //then
-        verify(applicationContext, times(1)).getObject(InjectedTestClass.class);
+        verify(applicationContext, times(1)).getBean(InjectedTestClass.class);
         Assertions.assertThat(injectTestClass.injectedTestClassBySetter).isNotNull();
     }
 }

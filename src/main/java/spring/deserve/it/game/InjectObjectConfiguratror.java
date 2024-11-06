@@ -1,6 +1,7 @@
 package spring.deserve.it.game;
 
 import lombok.SneakyThrows;
+import spring.deserve.it.api.ApplicationContext;
 import spring.deserve.it.api.Inject;
 import spring.deserve.it.api.ObjectConfigurator;
 
@@ -23,7 +24,7 @@ public class InjectObjectConfiguratror implements ObjectConfigurator {
         for (Field field : fields) {
             if (field.isAnnotationPresent(Inject.class)) {
                 field.setAccessible(true);
-                Object injectedObject = context.getObject(field.getType());
+                Object injectedObject = context.getBean(field.getType());
                 field.set(object, injectedObject);
             }
         }

@@ -1,4 +1,4 @@
-package spring.deserve.it.game;
+package spring.deserve.it.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
