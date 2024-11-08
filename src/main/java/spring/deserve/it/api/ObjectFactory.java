@@ -17,7 +17,7 @@ import java.util.Set;
 public class ObjectFactory {
     private final ApplicationContext       context;
     private final List<ObjectConfigurator> configurators;
-    private final List<Object>             proxyConfigurators;
+    private final List<ProxyConfigurator>  proxyConfigurators;
 
     public ObjectFactory(ApplicationContext context) {
         this.context = context;
@@ -41,7 +41,6 @@ public class ObjectFactory {
                                                      .collect(Collectors.toList());
 
     }
-
 
 
     private ProxyConfigurator createProxyConfigurator(Class<? extends ProxyConfigurator> clazz) {
@@ -91,7 +90,16 @@ public class ObjectFactory {
 
         // Завернуть в прокси все объекты
 
+        // 4. Проксируем объект через ProxyConfigurators
+        obj = wrapWithProxies(obj, type);
 
+        return obj;
+    }
+
+    private <T> T wrapWithProxies(T obj, Class<T> type) {
+        for (var proxyConfigurator : proxyConfigurators) {
+            obj = (T) proxyConfigurator.wrapWithProxy(obj, type);
+        }
         return obj;
     }
 

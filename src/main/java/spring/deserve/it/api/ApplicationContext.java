@@ -14,8 +14,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ApplicationContext {
     private final Map<Class<?>, Object> singletonBeans = new HashMap<>();
-    private final Reflections reflections;
-    private final ObjectFactory objectFactory;
+    private final Reflections           reflections;
+    private final ObjectFactory         objectFactory;
 
     public ApplicationContext(String... packagesToScan) {
         // Инициализация Reflection API для указанных пакетов
@@ -49,8 +49,13 @@ public class ApplicationContext {
 
         // Если у класса есть аннотация @Singleton, кешируем его по интерфейсу или классу
         if (type.isAnnotationPresent(Singleton.class)) {
-            Class<?> key = type.isInterface() ? type.getInterfaces()[0] : type; // кешируем по интерфейсу, если он есть
-            singletonBeans.put(key, bean);
+            var allInterfaces = ClassUtils.getAllInterfaces(bean);
+            if (allInterfaces.length > 0) {
+                singletonBeans.put(allInterfaces[0], bean);
+            } else {
+                singletonBeans.put(type, bean);
+            }
+//            Class<?> key           = type.isInterface() ? type.getInterfaces()[0] : type; // кешируем по интерфейсу, если он есть
         }
         return bean;
     }
