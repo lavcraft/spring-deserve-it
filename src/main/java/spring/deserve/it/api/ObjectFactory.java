@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
+import org.springframework.cglib.proxy.Enhancer;
 
 import java.util.stream.Collectors;
 
@@ -92,6 +93,7 @@ public class ObjectFactory {
 
         // 4. Проксируем объект через ProxyConfigurators
         obj = wrapWithProxies(obj, type);
+
 
         return obj;
     }

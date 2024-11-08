@@ -1,14 +1,29 @@
 package spring.deserve.it.api;
 
+import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import org.reflections.ReflectionUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
-public class PropertyObjectConfigurator implements ObjectConfigurator {
+@Component
+public class PropertyObjectConfigurator implements ObjectConfigurator , BeanPostProcessor {
+
+    @Autowired
+    private Environment environment;
+
+    @PostConstruct
+    public void printEnv(){
+        System.out.println(environment.getProperty("OS"));
+    }
 
     private final Properties properties = new Properties();
 
@@ -21,6 +36,12 @@ public class PropertyObjectConfigurator implements ObjectConfigurator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        configure(bean);
+        return bean;
     }
 
     @Override

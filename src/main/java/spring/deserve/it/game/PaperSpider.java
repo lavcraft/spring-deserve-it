@@ -1,9 +1,11 @@
 package spring.deserve.it.game;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 import spring.deserve.it.api.RPSEnum;
 import spring.deserve.it.api.Spider;
 
+@Component
 public class PaperSpider extends AbstractSpider {
 
 

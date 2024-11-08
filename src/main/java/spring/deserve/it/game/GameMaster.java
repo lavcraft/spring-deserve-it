@@ -1,11 +1,13 @@
 package spring.deserve.it.game;
 
+import org.springframework.stereotype.Component;
 import spring.deserve.it.api.Inject;
 import spring.deserve.it.api.RPSEnum;
 
+@Component
 public class GameMaster {
-    @Inject PaperSpider       spider1 = new PaperSpider();
-    @Inject StatisticalSpider spider2 = new StatisticalSpider();
+    @Inject PaperSpider       spider1;
+    @Inject StatisticalSpider spider2 ;
     @Inject HistoricalService historicalService;
 
     public void fight() {

@@ -3,6 +3,7 @@ package spring.deserve.it.game;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.stereotype.Component;
 import spring.deserve.it.api.Log;
 import spring.deserve.it.api.RPSEnum;
 import spring.deserve.it.api.Singleton;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Singleton
+@Component
 public class HistoricalServiceImpl implements HistoricalService {
 
     public void init() {

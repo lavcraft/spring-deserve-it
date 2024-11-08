@@ -1,11 +1,25 @@
 package spring.deserve.it.api;
 
+import lombok.SneakyThrows;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
-public class DynamicLogProxyConfigurator implements ProxyConfigurator {
+//@Component
+public class DynamicLogProxyConfigurator implements ProxyConfigurator, BeanPostProcessor {
+
+    @Autowired
+    private ConfigurableListableBeanFactory factory;
 
     @Override
     public Object wrapWithProxy(Object target, Class<?> originalClass) {
@@ -23,6 +37,18 @@ public class DynamicLogProxyConfigurator implements ProxyConfigurator {
             );
         }
         return target;  // Если аннотации @Log нет, возвращаем оригинальный объект
+    }
+
+    @Override
+    @SneakyThrows
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        BeanDefinition beanDefinition = factory.getBeanDefinition(beanName);
+        String         beanClassName  = beanDefinition.getBeanClassName();
+        Class<?>       beanClass         = Class.forName(beanClassName);
+
+        wrapWithProxy(bean,bean.getClass() );
+
+        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
     }
 
     private class LogInvocationHandler implements InvocationHandler {
