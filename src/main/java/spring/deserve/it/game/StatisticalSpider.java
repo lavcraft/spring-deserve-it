@@ -1,16 +1,25 @@
 package spring.deserve.it.game;
 
 
+import jakarta.annotation.PreDestroy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import spring.deserve.it.api.Inject;
 import spring.deserve.it.api.RPSEnum;
 import spring.deserve.it.api.Spider;
 
 @Component
+@Scope("prototype")
 public class StatisticalSpider extends AbstractSpider {
 
     @Inject
     private HistoricalService historicalServiceInterface;
+
+
+    @PreDestroy
+    public void terminate(){
+        System.out.println("Жизнь была прекрасна");
+    }
 
     @Override
     public RPSEnum fight(Spider opponent, int battleId) {
