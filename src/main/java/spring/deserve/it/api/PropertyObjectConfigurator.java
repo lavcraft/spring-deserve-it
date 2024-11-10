@@ -14,6 +14,9 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+//TODO подумайте в чём плюс не ставить @Component над BPP
+// как это может помочь в тестировании приложения
+// обратите внимания на старые тесты к PropertyObjectConfigurator, до перехода на Spring
 @Component
 public class PropertyObjectConfigurator implements ObjectConfigurator , BeanPostProcessor {
 

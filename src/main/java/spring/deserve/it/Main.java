@@ -21,15 +21,8 @@ public class Main {
 
 
     public static void main(String[] args) {
-
-
-        ConfigurableApplicationContext context = SpringApplication.run(Main.class);
+        var context = SpringApplication.run(Main.class);
         context.getBean(GameMaster.class).fight();
-
-      /*  System.out.println("Starting game");
-        var        applicationContext = new ApplicationContext("spring.deserve.it");
-        GameMaster gameMaster         = applicationContext.getBean(GameMaster.class);
-        gameMaster.fight();*/
     }
 
 }

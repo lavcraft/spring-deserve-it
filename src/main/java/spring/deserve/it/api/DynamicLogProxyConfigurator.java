@@ -6,20 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 //@Component
 public class DynamicLogProxyConfigurator implements ProxyConfigurator, BeanPostProcessor {
+    private final Map<String, Class> types = new HashMap<>();
 
     @Autowired
     private ConfigurableListableBeanFactory factory;
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        types.put(beanName, bean.getClass());
+        return bean;
+    }
 
     @Override
     public Object wrapWithProxy(Object target, Class<?> originalClass) {
@@ -32,7 +39,7 @@ public class DynamicLogProxyConfigurator implements ProxyConfigurator, BeanPostP
             // Создаем Dynamic Proxy
             return Proxy.newProxyInstance(
                     originalClass.getClassLoader(),
-                    originalClass.getInterfaces(),
+                    ClassUtils.getAllInterfaces(target),
                     new LogInvocationHandler(target, originalClass)
             );
         }
@@ -42,13 +49,11 @@ public class DynamicLogProxyConfigurator implements ProxyConfigurator, BeanPostP
     @Override
     @SneakyThrows
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        BeanDefinition beanDefinition = factory.getBeanDefinition(beanName);
-        String         beanClassName  = beanDefinition.getBeanClassName();
-        Class<?>       beanClass         = Class.forName(beanClassName);
+//        BeanDefinition beanDefinition = factory.getBeanDefinition(beanName);
+//        String         beanClassName  = beanDefinition.getBeanClassName();
+//        var            beanClass = types.get(beanName);
 
-        wrapWithProxy(bean,bean.getClass() );
-
-        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+        return wrapWithProxy(bean,bean.getClass() );
     }
 
     private class LogInvocationHandler implements InvocationHandler {
