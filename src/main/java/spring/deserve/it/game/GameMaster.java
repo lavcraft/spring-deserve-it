@@ -17,9 +17,10 @@ public class GameMaster {
     int maxLives;
     int battleId = 0;
 
-    @Inject List<Spider>                    spiders;  // Лист со всеми пауками
-    @Inject HistoricalService               historicalService;
-    @Inject ConfigurableListableBeanFactory applicationContext;
+    @Inject HistoricalService historicalService;
+
+    List<Spider>         spiders;  // Лист со всеми пауками
+    Map<String, Integer> playerTrophies;  // Карта с игроками и трофеями
 
     // Метод для запуска игры
     public void fight() {
@@ -45,6 +46,7 @@ public class GameMaster {
             String winner = spider1.isAlive()
                             ? spider1.getOwner()
                             : spider2.getOwner();
+            playerTrophies.put(winner, playerTrophies.getOrDefault(winner, 0) + 1);
 
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.out.println("!!! Победитель боя №" + battleId + ": " + winner);
@@ -99,20 +101,11 @@ public class GameMaster {
             );
         }
 
-        var fightScope = applicationContext.getRegisteredScope("fightScope");
         if (!spider1.isAlive()) {
-            var beanNamesForType = applicationContext.getBeanNamesForType(spider1.getClass());
-            if (beanNamesForType.length > 0) {
-                fightScope.remove(beanNamesForType[0]);
-            }
             spiders.remove(spider1);
 
         }
         if (!spider2.isAlive()) {
-            var beanNamesForType = applicationContext.getBeanNamesForType(spider2.getClass());
-            if (beanNamesForType.length > 0) {
-                fightScope.remove(beanNamesForType[0]);
-            }
             spiders.remove(spider2);
         }
     }
