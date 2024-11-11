@@ -3,13 +3,15 @@ package spring.deserve.it.game;
 
 import jakarta.annotation.PreDestroy;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import spring.deserve.it.api.Inject;
+import spring.deserve.it.api.PlayerQualifier;
 import spring.deserve.it.api.RPSEnum;
 import spring.deserve.it.api.Spider;
 
 @Component
-@Scope("prototype")
+@PlayerQualifier(playerName = "Kirill")
 public class StatisticalSpider extends AbstractSpider {
 
     @Inject

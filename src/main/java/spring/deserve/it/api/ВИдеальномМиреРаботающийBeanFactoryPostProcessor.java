@@ -9,5 +9,6 @@ import org.springframework.stereotype.Component;
 public class ВИдеальномМиреРаботающийBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        beanFactory.getBeanDefinition("stoneSpider").getResolvableType().getType().getTypeName();    }
+        beanFactory.getBeanDefinition("stoneSpider").getResolvableType().getType().getTypeName();
+    }
 }

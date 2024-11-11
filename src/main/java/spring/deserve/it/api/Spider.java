@@ -14,5 +14,7 @@ public interface Spider {
     default String getOwner() {
         return "unknown";
     }
+
+     void setOwner(String owner);
 }
 

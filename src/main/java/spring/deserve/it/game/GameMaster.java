@@ -19,7 +19,10 @@ public class GameMaster {
 
     @Inject HistoricalService historicalService;
 
+    @Autowired
     List<Spider>         spiders;  // Лист со всеми пауками
+
+    @Autowired
     Map<String, Integer> playerTrophies;  // Карта с игроками и трофеями
 
     // Метод для запуска игры

@@ -14,15 +14,10 @@ import java.util.Random;
 public class Main {
 
 
-    @Bean
-    public StoneSpider stoneSpider() {
-        return new StoneSpider();
-    }
-
-
     public static void main(String[] args) {
         var context = SpringApplication.run(Main.class);
-        context.getBean(GameMaster.class).fight();
+        GameMaster master = context.getBean(GameMaster.class);
+        master.fight();
     }
 
 }
