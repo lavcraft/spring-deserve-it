@@ -8,10 +8,8 @@ import spring.deserve.it.api.Log;
 import spring.deserve.it.api.RPSEnum;
 import spring.deserve.it.api.Singleton;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class HistoricalServiceImpl implements HistoricalService {
@@ -52,9 +50,9 @@ public class HistoricalServiceImpl implements HistoricalService {
     @Builder
     @ToString
     public static class Move {
-        private final int player1Id;  // Уникальный ID паука 1
+        private final int     player1Id;  // Уникальный ID паука 1
         private final RPSEnum player1Move;  // Ход, который сделал паук 1
-        private final int player2Id;  // Уникальный ID паука 2
+        private final int     player2Id;  // Уникальный ID паука 2
         private final RPSEnum player2Move;  // Ход, который сделал паук 2
     }
 
@@ -72,10 +70,12 @@ public class HistoricalServiceImpl implements HistoricalService {
         battleHistory.computeIfAbsent(battleId, id -> new ArrayList<>()).add(move);
 
         // Обновляем статистику по первому пауку
-        lifetimeStatistics.computeIfAbsent(move.getPlayer1Id(), id -> new SpiderStatistics()).addMove(move.getPlayer1Move());
+        lifetimeStatistics.computeIfAbsent(move.getPlayer1Id(), id -> new SpiderStatistics())
+                          .addMove(move.getPlayer1Move());
 
         // Обновляем статистику по второму пауку
-        lifetimeStatistics.computeIfAbsent(move.getPlayer2Id(), id -> new SpiderStatistics()).addMove(move.getPlayer2Move());
+        lifetimeStatistics.computeIfAbsent(move.getPlayer2Id(), id -> new SpiderStatistics())
+                          .addMove(move.getPlayer2Move());
     }
 
     // Получение статистики паука по его ID
@@ -94,29 +94,35 @@ public class HistoricalServiceImpl implements HistoricalService {
     @Override
     public String getBattleHistory() {
         StringBuilder battlefieldLog = new StringBuilder();
+        Formatter     fm             = new Formatter(battlefieldLog);
 
         if (battleHistory.isEmpty()) {
             return "История боев пуста.";
         }
 
-        List<Move> moves = battleHistory.values().stream().findFirst().orElse(new ArrayList<>());
+        int charInCol = 20;
+        var collect = battleHistory.values()
+                                   .stream().map(moves -> {
+                    // Форматируем заголовок с хэш-кодами игроков
+                    fm.format("%n|-------|%s|%s|%n", "-".repeat(charInCol), "-".repeat(charInCol));
+                    fm.format(
+                            "| Ход № | И1 %-" + (charInCol - 5) + "s | И2 %-" + (charInCol - 5) + "s |%n",
+                            moves.get(0).getPlayer1Id(),
+                            moves.get(0).getPlayer2Id()
+                    );
+                    fm.format("|-------|%s|%s|%n", "-".repeat(charInCol), "-".repeat(charInCol));
 
-        // Форматируем заголовок с хэш-кодами игроков
-        battlefieldLog.append("\n| Ход № | И1 (").append(moves.get(0).getPlayer1Id()).append(") | И2 (").append(moves.get(0).getPlayer2Id()).append(") |\n");
-        battlefieldLog.append("|-------|-----------------|-----------------|\n");
+                    // Итерируем по списку ходов
+                    for (int i = 0; i < moves.size(); i++) {
+                        Move move = moves.get(i);
+                        fm.format("| %5s | %18s | %18s |%n", i + 1, move.getPlayer1Move(), move.getPlayer2Move());
+                    }
+                    fm.format("|-------|%s|%s|%n", "-".repeat(charInCol), "-".repeat(charInCol));
 
-        // Итерируем по списку ходов
-        for (int i = 0; i < moves.size(); i++) {
-            Move move = moves.get(i);
-            battlefieldLog.append("|   ").append(i + 1).append("   |");
+                    return fm.toString();
+                })
+                                   .collect(Collectors.joining("\n"));
 
-            // Ход игрока 1
-            battlefieldLog.append("     ").append(move.getPlayer1Move() != null ? move.getPlayer1Move() : "").append("     |");
-
-            // Ход игрока 2
-            battlefieldLog.append("     ").append(move.getPlayer2Move() != null ? move.getPlayer2Move() : "").append("     |\n");
-        }
-
-        return battlefieldLog.toString();
+        return collect;
     }
 }
