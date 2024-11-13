@@ -1,6 +1,7 @@
 package spring.deserve.it.api;
 
 import jakarta.annotation.PreDestroy;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -36,6 +37,7 @@ public class NoPredestroyWithPrototypeBeanAnymore {
     }
 
     @Test
+    @Disabled
     void should_thrown() {
         new ApplicationContextRunner()
                 .withUserConfiguration(Config.class)

@@ -49,9 +49,10 @@ public class DynamicLogProxyConfigurator implements ProxyConfigurator, BeanPostP
     @Override
     @SneakyThrows
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-//        BeanDefinition beanDefinition = factory.getBeanDefinition(beanName);
-//        String         beanClassName  = beanDefinition.getBeanClassName();
-//        var            beanClass = types.get(beanName);
+        //TODO
+        BeanDefinition beanDefinition = factory.getBeanDefinition(beanName);
+        String         beanClassName  = beanDefinition.getBeanClassName();
+        var            beanClass = types.get(beanName);
 
         return wrapWithProxy(bean,bean.getClass() );
     }
