@@ -1,8 +1,6 @@
 package spring.deserve.it.game;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
 import spring.deserve.it.api.Inject;
 import spring.deserve.it.api.RPSEnum;
@@ -17,13 +15,9 @@ public class GameMaster {
     int maxLives;
     int battleId = 0;
 
-    @Inject HistoricalService historicalService;
-
-    @Autowired
-    List<Spider>         spiders;  // Лист со всеми пауками
-
-    @Autowired
-    Map<String, Integer> playerTrophies;  // Карта с игроками и трофеями
+    @Inject HistoricalService    historicalService;
+    @Inject List<Spider>         spiders;  // Лист со всеми пауками
+    @Inject Map<String, Integer> playerTrophies;  // Карта с игроками и трофеями
 
     // Метод для запуска игры
     public void fight() {
