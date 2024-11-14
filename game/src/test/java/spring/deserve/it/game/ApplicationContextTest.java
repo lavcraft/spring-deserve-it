@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.reflections.Reflections;
 import spring.deserve.it.api.ApplicationContext;
 import spring.deserve.it.api.ObjectFactory;
-import spring.deserve.it.api.Singleton;
+import spring.deserve.starter.core.Singleton;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

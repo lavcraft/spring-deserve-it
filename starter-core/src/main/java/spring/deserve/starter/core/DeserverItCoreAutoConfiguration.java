@@ -2,8 +2,10 @@ package spring.deserve.starter.core;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 @AutoConfiguration
+@Import(SingletonImportSelector.class)
 public class DeserverItCoreAutoConfiguration {
 
     @Bean
