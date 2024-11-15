@@ -2,13 +2,12 @@ package spring.deserve.it.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.springframework.util.ClassUtils;
+import spring.deserve.starter.core.Singleton;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
