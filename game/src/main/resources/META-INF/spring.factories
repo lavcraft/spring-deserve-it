@@ -1,1 +1,2 @@
 org.springframework.boot.env.EnvironmentPostProcessor = spring.deserve.it.api.GodModeEnvironmentPostProcessor
+org.springframework.boot.diagnostics.FailureAnalyzer = spring.deserve.it.api.MyFailureAnalyzer

@@ -1,6 +1,8 @@
 package spring.deserve.it.game;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import spring.deserve.it.api.PlayerQualifier;
 import spring.deserve.it.api.RPSEnum;
@@ -8,7 +10,6 @@ import spring.deserve.it.api.Spider;
 
 @PlayerQualifier(playerName = "Dima")
 public class PaperSpider extends AbstractSpider {
-
 
     @PostConstruct
     public void init(){

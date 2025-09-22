@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 public class DeserverItCoreAutoConfiguration {
 
     @Bean
-    public DynamicLogProxyConfigurator dynamicLogProxyConfigurator() {
+    public static DynamicLogProxyConfigurator dynamicLogProxyConfigurator() {
         return new DynamicLogProxyConfigurator();
     }
 

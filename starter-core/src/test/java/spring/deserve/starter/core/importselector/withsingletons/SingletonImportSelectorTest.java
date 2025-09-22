@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import spring.deserve.starter.core.Singleton;
+import spring.deserve.starter.core.importselector.SingletonImportSelector;
 
 import java.util.List;
 

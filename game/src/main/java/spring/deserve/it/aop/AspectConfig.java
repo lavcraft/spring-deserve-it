@@ -4,9 +4,11 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
 @ConditionalOnProperty(name = "godMode",havingValue = "true")
+@EnableAspectJAutoProxy
 public class AspectConfig {
 
     @Bean

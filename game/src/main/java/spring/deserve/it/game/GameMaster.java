@@ -1,5 +1,6 @@
 package spring.deserve.it.game;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import spring.deserve.it.api.Inject;
@@ -16,8 +17,11 @@ public class GameMaster {
     int battleId = 0;
 
     @Inject HistoricalService    historicalService;
-    @Inject List<Spider>         spiders;  // Лист со всеми пауками
     @Inject Map<String, Integer> playerTrophies;  // Карта с игроками и трофеями
+
+    @Getter
+    @Inject
+    List<Spider> spiders;  // Лист со всеми пауками
 
     // Метод для запуска игры
     public void fight() {

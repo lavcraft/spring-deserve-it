@@ -6,20 +6,29 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.core.type.StandardMethodMetadata;
+import spring.deserve.it.api.FailException;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreDestroyBFPP implements BeanFactoryPostProcessor, BeanPostProcessor {
-    private List<String> proptypes = new ArrayList<>();
+//TODO - напишите версию которая будет работать с бинами созданными с помощью java Config
+// @Configuration public class Config { @Bean Spider customSpider() { return new AbstractSpider() { ... } } }
+public class PreDestroyBeanFactoryPostProcessor implements BeanFactoryPostProcessor, BeanPostProcessor {
+    private List<String> prototypes = new ArrayList<>();
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if (proptypes.contains(beanName)) {
+        System.out.println("beanName = " + beanName);
+
+        if (prototypes.contains(beanName)) {
             ReflectionUtils.getAllMethods(bean.getClass(), method -> method.isAnnotationPresent(PreDestroy.class))
                            .stream()
                            .findAny()
-                           .ifPresent(v -> System.exit(1));
+                           .ifPresent(v -> {
+                               throw new FailException();
+                           });
 
         }
         return bean;
@@ -32,7 +41,13 @@ public class PreDestroyBFPP implements BeanFactoryPostProcessor, BeanPostProcess
             var beanDefinition = beanFactory.getBeanDefinition(beanDefinitionName);
 
             if (beanDefinition.isPrototype()) {
-                proptypes.add(beanDefinitionName);
+                prototypes.add(beanDefinitionName);
+                Object source = beanDefinition.getSource();
+                if(source instanceof StandardMethodMetadata s) {
+                    Class<? extends StandardMethodMetadata> aClass = s.getClass();
+                    System.out.println("aClass = " + aClass);
+
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.core.type.StandardMethodMetadata;
 import org.springframework.stereotype.Component;
 
 
@@ -25,14 +26,27 @@ public class PrototypeWithPreDestroyChecker implements BeanFactoryPostProcessor 
 
                 // Пропускаем бины без имени класса
                 if (beanClassName == null) {
+                    Object source = beanDefinition.getSource();
+                    if (source instanceof StandardMethodMetadata) {
+                        try {
+                            Class<?> aClass = Class.forName(((StandardMethodMetadata) source).getReturnTypeName());
+                            if (hasPreDestroyMethod(aClass)) {
+                                throw new FailException();
+                            }
+                        } catch (ClassNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     continue;
                 }
+
 
                 try {
                     // Проверяем, есть ли в классе метода с аннотацией @PreDestroy
                     Class<?> beanClass = Class.forName(beanClassName);
                     if (hasPreDestroyMethod(beanClass)) {
-                        throw new IllegalStateException("Bean '" + beanName + "' с scope 'prototype' содержит метод с @PreDestroy, что недопустимо.");
+//                        throw new IllegalStateException("Bean '" + beanName + "' с scope 'prototype' содержит метод с @PreDestroy, что недопустимо.");
+                        throw new FailException();
                     }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException("Не удалось загрузить класс для бина: " + beanName, e);
